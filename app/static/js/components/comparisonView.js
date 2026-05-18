@@ -24,6 +24,8 @@ export function renderComparisonResults(results) {
                 </div>
             `;
             return;
+        }
+        
         if (modeResults.message) {
             if (countEl) countEl.textContent = '0 results';
             if (timeEl) timeEl.textContent = '';
