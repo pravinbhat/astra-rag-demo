@@ -36,9 +36,48 @@ function renderCheckoutStatus(book) {
     return '<span class="book-status available">✓ Available</span>';
 }
 
-function renderSimilarity(similarity) {
-    if (similarity === undefined || similarity === null) return '';
-    return `<span class="book-similarity">Similarity: ${(similarity * 100).toFixed(0)}%</span>`;
+// Helper functions for unified score handling
+function getVectorSimilarity(book) {
+    if (book.$similarity !== undefined && book.$similarity !== null) {
+        return book.$similarity;
+    }
+    if (book.scores && book.scores.$vector !== undefined && book.scores.$vector !== null) {
+        return book.scores.$vector;
+    }
+    return null;
+}
+
+function formatSimilarityPercent(similarity) {
+    if (similarity === null || similarity === undefined) return null;
+    return Math.round(similarity * 100);
+}
+
+function renderSearchScores(book) {
+    const similarity = getVectorSimilarity(book);
+    const scores = book.scores;
+    
+    // No scores to display
+    if (!similarity && !scores) return '';
+    
+    const parts = [];
+    
+    // Semantic search: Show vector similarity percentage
+    if (similarity !== null && !scores) {
+        const percent = formatSimilarityPercent(similarity);
+        parts.push(`<span class="score-similarity" title="Vector similarity score">🎯 ${percent}% match</span>`);
+    }
+    
+    // Lexical or Hybrid search: Show rerank score
+    if (scores && scores.$rerank !== undefined && scores.$rerank !== null) {
+        parts.push(`<span class="score-rerank" title="Rerank relevance score">Rerank: ${scores.$rerank.toFixed(2)}</span>`);
+    }
+    
+    // Hybrid search only: Show RRF score
+    if (scores && scores.$rrf !== undefined && scores.$rrf !== null) {
+        parts.push(`<span class="score-rrf" title="Reciprocal Rank Fusion score">RRF: ${scores.$rrf.toFixed(4)}</span>`);
+    }
+    
+    return parts.length > 0 ? `<div class="book-scores">${parts.join(' • ')}</div>` : '';
 }
 
 export function createBookCard(book, onClickHandler) {
@@ -48,7 +87,6 @@ export function createBookCard(book, onClickHandler) {
     card.setAttribute('role', 'button');
     card.setAttribute('tabindex', '0');
     card.setAttribute('aria-label', `View details for ${book.title} by ${book.author}`);
-    const similarity = book.$similarity;
     
     card.innerHTML = `
         <h3 class="book-title">${book.title}</h3>
@@ -68,7 +106,7 @@ export function createBookCard(book, onClickHandler) {
         
         <div class="book-footer">
             ${renderCheckoutStatus(book)}
-            ${renderSimilarity(similarity)}
+            ${renderSearchScores(book)}
         </div>
     `;
     

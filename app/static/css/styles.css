@@ -720,6 +720,41 @@ a:hover {
     color: var(--warning-color);
 }
 
+/* Book Card Score Display */
+.book-scores {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    margin-top: var(--spacing-sm);
+}
+
+.score-similarity {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+.score-rerank {
+    color: var(--secondary-color);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-xs);
+}
+
+.score-rrf {
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-xs);
+}
+
+.score-rank {
+    color: var(--text-muted);
+}
+
+/* Legacy similarity display (for backward compatibility) */
 .book-similarity {
     color: var(--text-muted);
     font-size: var(--font-size-xs);
@@ -1412,24 +1447,72 @@ a:hover {
     color: var(--text-primary);
 }
 
+/* Modal Score Details */
+.score-detail {
+    margin-bottom: var(--spacing-lg);
+    padding: var(--spacing-md);
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-md);
+}
+
+.score-label {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xs);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+}
+
+.score-value {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--primary-color);
+    font-family: var(--font-mono);
+    margin: var(--spacing-xs) 0;
+}
+
+.score-description {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.info-icon {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+    text-align: center;
+    background: var(--info-color);
+    color: white;
+    border-radius: 50%;
+    font-size: 12px;
+    cursor: help;
+    font-weight: 600;
+}
+
+/* Similarity bar styling */
 .similarity-bar {
     width: 100%;
-    height: 0.5rem;
-    background: var(--border-color);
-    border-radius: 0.25rem;
+    height: 8px;
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-full);
     overflow: hidden;
+    margin: var(--spacing-xs) 0;
 }
 
 .similarity-fill {
     height: 100%;
-    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-    transition: width 0.3s ease;
+    background: linear-gradient(90deg, var(--primary-color), var(--primary-hover));
+    transition: width var(--transition-base);
 }
 
 .similarity-text {
-    font-size: 0.875rem;
+    font-size: var(--font-size-sm);
     color: var(--text-secondary);
-    margin: 0.5rem 0 0 0;
+    margin: var(--spacing-xs) 0 0 0;
 }
 
 .detail-id {

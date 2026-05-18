@@ -5,6 +5,22 @@
 
 let currentModal = null;
 
+// Helper functions for unified score handling
+function getVectorSimilarity(book) {
+    if (book.$similarity !== undefined && book.$similarity !== null) {
+        return book.$similarity;
+    }
+    if (book.scores && book.scores.$vector !== undefined && book.scores.$vector !== null) {
+        return book.scores.$vector;
+    }
+    return null;
+}
+
+function formatSimilarityPercent(similarity) {
+    if (similarity === null || similarity === undefined) return null;
+    return Math.round(similarity * 100);
+}
+
 function renderStarRating(rating) {
     const fullStars = Math.floor(rating);
     const hasHalfStar = rating % 1 >= 0.5;
@@ -50,14 +66,60 @@ function renderCheckoutStatus(book) {
     `;
 }
 
+function renderSearchRelevance(book) {
+    const similarity = getVectorSimilarity(book);
+    const scores = book.scores;
+    
+    if (!similarity && !scores) return '';
+    
+    let html = '<div class="detail-section"><h3>Search Relevance</h3>';
+    
+    // Semantic search: Show vector similarity with progress bar
+    if (similarity !== null && !scores) {
+        const percent = formatSimilarityPercent(similarity);
+        html += `
+            <div class="score-detail">
+                <div class="score-label">Vector Similarity</div>
+                <div class="similarity-bar">
+                    <div class="similarity-fill" style="width: ${percent}%"></div>
+                </div>
+                <p class="similarity-text">${percent}% match</p>
+            </div>
+        `;
+    }
+    
+    // Lexical or Hybrid search: Show rerank score
+    if (scores && scores.$rerank !== undefined && scores.$rerank !== null) {
+        html += `
+            <div class="score-detail">
+                <div class="score-label">Rerank Score</div>
+                <div class="score-value" title="Final relevance adjustment">${scores.$rerank.toFixed(4)}</div>
+                <p class="score-description">Final relevance adjustment (lower is better)</p>
+            </div>
+        `;
+    }
+    
+    // Hybrid search only: Show RRF score
+    if (scores && scores.$rrf !== undefined && scores.$rrf !== null) {
+        html += `
+            <div class="score-detail">
+                <div class="score-label">RRF Score <span class="info-icon" title="Reciprocal Rank Fusion combines multiple ranking signals">ⓘ</span></div>
+                <div class="score-value">${scores.$rrf.toFixed(6)}</div>
+                <p class="score-description">Reciprocal Rank Fusion score (lower is better)</p>
+            </div>
+        `;
+    }
+    
+    html += '</div>';
+    return html;
+}
+
 function createBookDetailsModal(book) {
     const modal = document.createElement('div');
     modal.className = 'book-details-modal';
     modal.setAttribute('role', 'dialog');
     modal.setAttribute('aria-labelledby', 'book-details-title');
     modal.setAttribute('aria-modal', 'true');
-    
-    const similarity = book.$similarity;
     
     modal.innerHTML = `
         <div class="book-details-backdrop"></div>
@@ -132,15 +194,7 @@ function createBookDetailsModal(book) {
                         ${renderCheckoutStatus(book)}
                     </div>
                     
-                    ${similarity !== undefined && similarity !== null ? `
-                        <div class="detail-section">
-                            <h3>Search Relevance</h3>
-                            <div class="similarity-bar">
-                                <div class="similarity-fill" style="width: ${similarity * 100}%"></div>
-                            </div>
-                            <p class="similarity-text">${(similarity * 100).toFixed(0)}% match</p>
-                        </div>
-                    ` : ''}
+                    ${renderSearchRelevance(book)}
                     
                     ${book._id ? `
                         <div class="detail-section">

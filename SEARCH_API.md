@@ -113,12 +113,44 @@ Combine multiple filter conditions (implicit AND).
       "genres": ["Fiction", "Drama"],
       "metadata": { "isbn": "978-1-234567-89-0", "language": "English" },
       "is_checked_out": false,
-      "$similarity": 0.91
+      "$similarity": 0.91,
+      "scores": {
+        "$rerank": -2.5605469,
+        "$vector": 0.6520678,
+        "$rrf": 0.016393442
+      }
     }
   ],
   "total": 1
 }
 ```
+
+### Response Fields
+
+Search results include relevance scores based on the search type:
+
+#### Score Fields by Search Type
+
+| Search Type | Score Fields | Description |
+|-------------|--------------|-------------|
+| **Semantic** | `$similarity` | Vector similarity (0-1, higher is better) |
+| **Lexical** | `scores.$rerank`, `scores.$rrf` | Rerank score (primary), RRF score (tiebreaker) |
+| **Hybrid** | `scores.$rerank`, `scores.$rrf` | Rerank + Reciprocal Rank Fusion scores |
+
+#### Field Descriptions
+
+- **`$similarity`**: Semantic similarity score (0.0 to 1.0). Higher values indicate better matches.
+- **`scores`**: Score breakdown for lexical and hybrid search results (only present for these search modes):
+  - **`$rerank`**: Final relevance score after reranking. Lower (often negative) values indicate higher relevance. Primary sorting criterion.
+  - **`$rrf`**: Reciprocal Rank Fusion score combining multiple ranking signals. Lower values indicate better results. Used as a tiebreaker when `$rerank` scores are equal.
+  - **`$vector`**: Vector similarity score (0.0 to 1.0) for lexical/hybrid searches.
+
+#### UI Display
+
+The UI shows simplified scores for clarity:
+- **Semantic**: Vector similarity as percentage (e.g., "🎯 85% match")
+- **Lexical**: Rerank and RRF scores
+- **Hybrid**: Rerank and RRF scores
 
 ## Example Requests
 
@@ -201,10 +233,6 @@ curl -X POST "http://localhost:8000/api/library-books/search" \
 ## Notes
 
 - All search operations are performed server-side by AstraDB for optimal performance
-- **Semantic search** finds documents by meaning and concepts using AI embeddings
-- **Lexical search** finds documents by exact keyword matching
-- **Hybrid search** combines both semantic and lexical approaches for best results
 - Pagination is supported through `skip` and `limit` parameters
 - The `total` field in the response indicates the total number of matching documents
 - Empty filter `{}` with no query or keywords will return all documents (subject to pagination limits)
-- Semantic and hybrid results may include a `$similarity` score indicating relevance

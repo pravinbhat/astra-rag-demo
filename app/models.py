@@ -66,6 +66,10 @@ class LibraryBookResponse(LibraryBookBase):
         alias="$similarity",
         description="Similarity score returned by AstraDB for semantic search results"
     )
+    scores: Optional[Dict[str, Any]] = Field(
+        None,
+        description="Score breakdown for lexical and hybrid search results (includes $rerank, $vector, $rrf)"
+    )
     embedding: Optional[list[float]] = Field(None, description="Optional embedding payload if stored in the document")
 
     model_config = ConfigDict(from_attributes=True, populate_by_name=True, extra="ignore")

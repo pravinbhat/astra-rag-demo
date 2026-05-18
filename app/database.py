@@ -332,7 +332,8 @@ class LibraryBookRepository:
             cursor = collection.find_and_rerank(
                 filter=predicates,
                 sort={"$hybrid": keywords},  # Use $hybrid with query text for lexical
-                limit=skip + limit
+                limit=skip + limit,
+                include_scores=True
             )
             
             library_books = []
@@ -341,6 +342,12 @@ class LibraryBookRepository:
                     continue
                 # Extract the document from RerankedResult
                 doc = reranked_result.document
+                
+                # Extract scores if available
+                if hasattr(reranked_result, 'scores') and reranked_result.scores:
+                    doc['scores'] = reranked_result.scores
+                    logger.debug(f"Lexical search result {index}: scores={reranked_result.scores}")
+                
                 library_books.append(self._normalize_library_book_document(doc))
                 if len(library_books) >= limit:
                     break
@@ -389,6 +396,12 @@ class LibraryBookRepository:
                     continue
                 # Extract the document from RerankedResult
                 doc = reranked_result.document
+                
+                # Extract scores if available
+                if hasattr(reranked_result, 'scores') and reranked_result.scores:
+                    doc['scores'] = reranked_result.scores
+                    logger.debug(f"Hybrid search result {index}: scores={reranked_result.scores}")
+                
                 library_books.append(self._normalize_library_book_document(doc))
                 if len(library_books) >= limit:
                     break
