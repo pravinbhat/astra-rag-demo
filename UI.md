@@ -24,8 +24,12 @@ Examples: "dystopian survival", "quantum physics", "artificial intelligence"
 ### Hybrid Search
 Combines semantic understanding and keyword matching for comprehensive results.
 
+![Hybrid Search Mode](app/static/UI_HybridMode.png)
+
 ### Comparison Mode
 View results from all four methods side-by-side to see how different approaches find different books.
+
+![Comparison Mode](app/static/UI_CompareMode.png)
 
 ## Quick Start
 

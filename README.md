@@ -108,6 +108,13 @@ This project includes a **modern web UI** built with vanilla JavaScript that pro
 
 **Access the UI**: Start the server and navigate to `http://localhost:8000`
 
+**Visual Preview:**
+
+<a href="UI.md#hybrid-search"><img src="app/static/UI_HybridMode.png" alt="Hybrid Search" width="400"/></a>
+<a href="UI.md#comparison-mode"><img src="app/static/UI_CompareMode.png" alt="Comparison Mode" width="400"/></a>
+
+*Click images to learn more in the [UI Guide](UI.md)*
+
 See [UI.md](UI.md) for complete UI documentation.
 
 
