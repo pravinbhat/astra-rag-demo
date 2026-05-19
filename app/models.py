@@ -23,7 +23,7 @@ class LibraryBookBase(BaseModel):
     vectorize_text: Optional[str] = Field(
         None,
         alias="$vectorize",
-        description="Text used by AstraDB to generate embeddings (summary and genres)",
+        description="Text used by AstraDB to generate embeddings (title, summary, and genres)",
         min_length=1
     )
 
@@ -51,7 +51,7 @@ class LibraryBookUpdate(BaseModel):
     vectorize_text: Optional[str] = Field(
         None,
         alias="$vectorize",
-        description="Text used by AstraDB to generate embeddings (summary and genres)",
+        description="Text used by AstraDB to generate embeddings (title, summary, and genres)",
         min_length=1
     )
 
@@ -104,7 +104,7 @@ class LibraryBookSearchRequest(BaseModel):
         description="Lexical search keywords for text matching"
     )
     skip: int = Field(0, ge=0, description="Number of documents to skip")
-    limit: int = Field(100, ge=1, le=1000, description="Maximum number of documents to return")
+    limit: int = Field(15, ge=1, le=100, description="Maximum number of documents to return")
     
     model_config = ConfigDict(
         json_schema_extra={

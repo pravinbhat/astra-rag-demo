@@ -124,10 +124,10 @@ class LibraryBookRepository:
             document = dict(library_book_data)
             
             # Add $vectorize field for embedding generation (same as ingestion flow)
-            # Uses summary and genres fields to create embeddings
-            if "summary" in document and "genres" in document:
+            # Uses title, summary and genres fields to create embeddings
+            if "title" in document and "summary" in document and "genres" in document:
                 genres_str = ", ".join(document["genres"]) if isinstance(document["genres"], list) else str(document["genres"])
-                document["$vectorize"] = f"summary: {document['summary']} | genres: {genres_str}"
+                document["$vectorize"] = f"title: {document['title']} | summary: {document['summary']} | genres: {genres_str}"
             
             result = collection.insert_one(document)
 
@@ -190,17 +190,18 @@ class LibraryBookRepository:
         try:
             collection = self._ensure_collection()
             
-            # If summary or genres are being updated, regenerate $vectorize field
-            if "summary" in update_data or "genres" in update_data:
+            # If title, summary or genres are being updated, regenerate $vectorize field
+            if "title" in update_data or "summary" in update_data or "genres" in update_data:
                 # Get current document to access fields not being updated
                 current_doc = collection.find_one({"_id": library_book_id})
                 if current_doc:
+                    title = update_data.get("title", current_doc.get("title", ""))
                     summary = update_data.get("summary", current_doc.get("summary", ""))
                     genres = update_data.get("genres", current_doc.get("genres", []))
                     
-                    if summary and genres:
+                    if title and summary and genres:
                         genres_str = ", ".join(genres) if isinstance(genres, list) else str(genres)
-                        update_data["$vectorize"] = f"summary: {summary} | genres: {genres_str}"
+                        update_data["$vectorize"] = f"title: {title} | summary: {summary} | genres: {genres_str}"
             
             result = collection.find_one_and_update(
                 {"_id": library_book_id},

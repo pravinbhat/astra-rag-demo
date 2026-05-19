@@ -56,7 +56,7 @@ def build_vectorized_documents(json_data: list[dict[str, Any]]) -> list[dict[str
                 else None
             ),
             "$vectorize": (
-                f"summary: {data['summary']} | genres: {', '.join(data['genres'])}"
+                f"title: {data['title']} | summary: {data['summary']} | genres: {', '.join(data['genres'])}"
             ),
         }
         for data in json_data

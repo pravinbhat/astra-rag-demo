@@ -138,6 +138,7 @@ function setupClearButtonListeners() {
 async function handleFilterSearch() {
     const filterBuilder = state.filterBuilders.filter;
     const filter = filterBuilder.getFilterPredicates();
+    const limit = parseInt(document.getElementById('filter-results-limit')?.value) || 15;
     
     if (!filterBuilder.hasFilters()) {
         alert('Please add at least one filter');
@@ -148,7 +149,7 @@ async function handleFilterSearch() {
         SearchResults.showLoading();
         SearchResults.showResults();
         
-        const result = await API.filterSearch(filter, 0, 100);
+        const result = await API.filterSearch(filter, 0, limit);
         
         const resultsGrid = document.getElementById('results-grid');
         SearchResults.renderResults(
@@ -162,7 +163,7 @@ async function handleFilterSearch() {
         SearchResults.hideLoading();
         SearchResults.scrollToResults();
         
-        state.lastSearchParams = { mode: 'filter', filter };
+        state.lastSearchParams = { mode: 'filter', filter, limit };
     } catch (error) {
         SearchResults.hideLoading();
         SearchResults.showError(error.message || 'Search failed. Please try again.');
@@ -174,6 +175,7 @@ async function handleSemanticSearch() {
     const query = document.getElementById('semantic-query')?.value.trim();
     const filterBuilder = state.filterBuilders.semantic;
     const filter = filterBuilder.hasFilters() ? filterBuilder.getFilterPredicates() : null;
+    const limit = parseInt(document.getElementById('semantic-results-limit')?.value) || 15;
     
     if (!query) {
         alert('Please enter a search query');
@@ -184,7 +186,7 @@ async function handleSemanticSearch() {
         SearchResults.showLoading();
         SearchResults.showResults();
         
-        const result = await API.semanticSearch(query, filter, 0, 100);
+        const result = await API.semanticSearch(query, filter, 0, limit);
         
         const resultsGrid = document.getElementById('results-grid');
         SearchResults.renderResults(
@@ -198,7 +200,7 @@ async function handleSemanticSearch() {
         SearchResults.hideLoading();
         SearchResults.scrollToResults();
         
-        state.lastSearchParams = { mode: 'semantic', query, filter };
+        state.lastSearchParams = { mode: 'semantic', query, filter, limit };
     } catch (error) {
         SearchResults.hideLoading();
         SearchResults.showError(error.message || 'Search failed. Please try again.');
@@ -210,6 +212,7 @@ async function handleLexicalSearch() {
     const keywords = document.getElementById('lexical-keywords')?.value.trim();
     const filterBuilder = state.filterBuilders.lexical;
     const filter = filterBuilder.hasFilters() ? filterBuilder.getFilterPredicates() : null;
+    const limit = parseInt(document.getElementById('lexical-results-limit')?.value) || 15;
     
     if (!keywords) {
         alert('Please enter keywords');
@@ -220,7 +223,7 @@ async function handleLexicalSearch() {
         SearchResults.showLoading();
         SearchResults.showResults();
         
-        const result = await API.lexicalSearch(keywords, filter, 0, 100);
+        const result = await API.lexicalSearch(keywords, filter, 0, limit);
         
         const resultsGrid = document.getElementById('results-grid');
         SearchResults.renderResults(
@@ -234,7 +237,7 @@ async function handleLexicalSearch() {
         SearchResults.hideLoading();
         SearchResults.scrollToResults();
         
-        state.lastSearchParams = { mode: 'lexical', keywords, filter };
+        state.lastSearchParams = { mode: 'lexical', keywords, filter, limit };
     } catch (error) {
         SearchResults.hideLoading();
         SearchResults.showError(error.message || 'Search failed. Please try again.');
@@ -247,6 +250,7 @@ async function handleHybridSearch() {
     const keywords = document.getElementById('hybrid-keywords')?.value.trim();
     const filterBuilder = state.filterBuilders.hybrid;
     const filter = filterBuilder.hasFilters() ? filterBuilder.getFilterPredicates() : null;
+    const limit = parseInt(document.getElementById('hybrid-results-limit')?.value) || 15;
     
     if (!query || !keywords) {
         alert('Please enter both a query and keywords for hybrid search');
@@ -257,7 +261,7 @@ async function handleHybridSearch() {
         SearchResults.showLoading();
         SearchResults.showResults();
         
-        const result = await API.hybridSearch(query, keywords, filter, 0, 100);
+        const result = await API.hybridSearch(query, keywords, filter, 0, limit);
         
         const resultsGrid = document.getElementById('results-grid');
         SearchResults.renderResults(
@@ -271,7 +275,7 @@ async function handleHybridSearch() {
         SearchResults.hideLoading();
         SearchResults.scrollToResults();
         
-        state.lastSearchParams = { mode: 'hybrid', query, keywords, filter };
+        state.lastSearchParams = { mode: 'hybrid', query, keywords, filter, limit };
     } catch (error) {
         SearchResults.hideLoading();
         SearchResults.showError(error.message || 'Search failed. Please try again.');
@@ -282,6 +286,7 @@ async function handleHybridSearch() {
 async function handleComparisonSearch() {
     const query = document.getElementById('comparison-query')?.value.trim();
     const keywords = document.getElementById('comparison-keywords')?.value.trim();
+    const limit = parseInt(document.getElementById('comparison-results-limit')?.value) || 15;
     
     if (!query && !keywords) {
         alert('Please enter at least a query or keywords');
@@ -292,7 +297,7 @@ async function handleComparisonSearch() {
         SearchResults.showLoading();
         SearchResults.showComparisonResults();
         
-        const results = await API.comparisonSearch(query, keywords, null, 20);
+        const results = await API.comparisonSearch(query, keywords, null, limit);
         
         ComparisonView.renderComparisonResults(results, BookDetailsModal.showBookDetails);
         
@@ -302,7 +307,7 @@ async function handleComparisonSearch() {
         SearchResults.hideLoading();
         SearchResults.scrollToResults();
         
-        state.lastSearchParams = { mode: 'comparison', query, keywords };
+        state.lastSearchParams = { mode: 'comparison', query, keywords, limit };
     } catch (error) {
         SearchResults.hideLoading();
         SearchResults.showError(error.message || 'Comparison search failed. Please try again.');

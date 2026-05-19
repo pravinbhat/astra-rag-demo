@@ -484,6 +484,49 @@ a:hover {
     display: flex;
     gap: var(--spacing-md);
     justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+/* Results limit control */
+.results-limit-control {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background-color: var(--bg-tertiary);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+}
+
+.limit-label {
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.limit-selector {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    outline: none;
+}
+
+.limit-selector:hover {
+    border-color: var(--border-hover);
+    background-color: var(--bg-secondary);
+}
+
+.limit-selector:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px var(--primary-light);
 }
 
 .form-actions {

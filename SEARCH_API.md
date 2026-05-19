@@ -40,7 +40,7 @@ Search endpoint for querying library books using filters, semantic, lexical, or 
 - **query** (optional): Semantic search query/prompt used for AstraDB vector search
 - **keywords** (optional): Lexical search keywords for text matching
 - **skip** (optional): Number of documents to skip for pagination (default: 0, min: 0)
-- **limit** (optional): Maximum number of documents to return (default: 100, min: 1, max: 1000)
+- **limit** (optional): Maximum number of documents to return (default: 15, min: 1, max: 100)
 
 ## Filter Operators
 
@@ -131,11 +131,11 @@ Search results include relevance scores based on the search type:
 
 #### Score Fields by Search Type
 
-| Search Type | Score Fields | Description |
-|-------------|--------------|-------------|
-| **Semantic** | `$similarity` | Vector similarity (0-1, higher is better) |
-| **Lexical** | `scores.$rerank`, `scores.$rrf` | Rerank score (primary), RRF score (tiebreaker) |
-| **Hybrid** | `scores.$rerank`, `scores.$rrf` | Rerank + Reciprocal Rank Fusion scores |
+| Search Type  | Score Fields                    | Description                                    |
+| --------------| ---------------------------------| ------------------------------------------------|
+| **Semantic** | `$similarity`                   | Vector similarity (0-1, higher is better)      |
+| **Lexical**  | `scores.$rerank`, `scores.$rrf` | Rerank score (primary), RRF score (tiebreaker) |
+| **Hybrid**   | `scores.$rerank`, `scores.$rrf` | Rerank + Reciprocal Rank Fusion scores         |
 
 #### Field Descriptions
 
